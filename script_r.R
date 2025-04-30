@@ -70,6 +70,47 @@ rm(list=ls())
 library(readxl)
 M <- read_excel("")
 View(M)
+
+### counting missing - total
+summary(M)
+
+totalcells = prod(dim(M))
+print("Total number of cells ")
+print(totalcells)
+
+##calculating the number of cells with na
+missingcells = sum(is.na(M))
+print("Missing value cells")
+print(missingcells)
+
+# calculating percentage of missing values
+percentage = (missingcells * 100 )/(totalcells)
+print("Percentage of missing values' cells")
+print (percentage)
+
+##counting missing related to fathers' report (percentage on the total sample)
+# Totale celle nel dataset
+total_cells <- prod(dim(M))
+
+# Celle NA totali
+missing_total <- sum(is.na(M))
+
+# Seleziona variabili padre
+father_vars <- M[, grepl("_F_", names(M))]
+
+# Celle NA nei dati padre
+missing_father <- sum(is.na(father_vars))
+
+# Percentuale di missing padre sul totale dei missing
+perc_father_of_missing <- (missing_father / missing_total) * 100
+
+# Stampa i risultati
+cat("Missing father cells (n):\n")
+print(missing_father)
+
+cat("Percentage of total missing data due to father variables:\n")
+print(perc_father_of_missing)
+
 ##creating subscales 
 ##fathers 
 ##hsc scales
@@ -280,6 +321,7 @@ sd (M$exter_m, na.rm = TRUE)
 summary(M$exter_f) 
 sd(M$exter_f, na.rm = TRUE)
 
+
 mod0 <-lm(inter_tot ~ accept_mr, data = M)
 summary(mod0) 
 
@@ -325,6 +367,8 @@ plot<-p1 + theme(panel.grid.minor= element_blank())+
 
 ggsave("figure_1.png", plot=plot, width=6, height=4, dpi=300)
 
+sim_slopes(mod2, pred = accept_mr, modx = hsc_tot, modx.values = c(4.041667, 4.875000), johnson_neyman = TRUE, jnplot=TRUE )
+
 
 mod333<- lm(exter_tot ~ accept_mr, data = M)
 summary(mod333) 
@@ -345,3 +389,4 @@ AIC(mod33)
 library(MuMIn)
 model.sel(mod333, mod3, mod33)
 
+##replace father-related variables for running models with fathers or variables related to single informant. 
